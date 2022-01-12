@@ -1,9 +1,10 @@
 #include <stdio.h>
 
 int main(void) {
-
-   printf("Traffic today");
-   printf(" is very light\n");
+   int a;
+   printf("Input a number: ");
+   scanf("%d", &a);
+   printf("%d is the number you input\n", a);
 
    return 0;
 }
