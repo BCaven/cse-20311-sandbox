@@ -1,0 +1,45 @@
+report.txt
+Lab 3: Report | John Blake Caven | 2-7-22
+
+How it works from a user perspective:
+From a user's perspective: they are prompted with five menu options:
+	1) add
+	2) subtract
+	3) multiply
+	4) divide
+	5) exit
+When they choose an option, they are asked to input two numbers.
+Once both numbers have been entered, the program outputs the operation
+selected on the two numbers. If the user attempts to input a combination
+of numbers that will not work (for example, dividing by zero) the program 
+will display an error message and reprompt the user. If the user enters a
+menu option that is not in the list, they will be sent back to the menu
+after an error message is displayed. Upon exiting, the program ends.
+
+How it works internally:
+Each operatioin is separated into its own function. Each function (except
+for the function which runs the program) takes two doubles as parameters.
+For the four functions which process operations, only one is complex. The
+divide function checks if the user is attempting to divide by zero and if
+they are, returns "9999999999." While this is not the best way to deal with
+division by zero (because theoretically that number can be created naturally),
+it fits the needs of a basic calculator which does not need to deal with
+large numbers.
+Each option is stored in a switch statement, and each function is called
+according to the option selected.
+The input calls for the two numbers are in an if statement to ensure the
+cleanliness of the program when it exits or returns an error.
+The program also checks for error which should be impossible by setting the
+default option to returning the error which is displayed when the option
+selected is not on the list. Even though in its current state that code
+will never run, including it allows for future additions to the program such
+as additional functions (i.e. square root, raising a number to a power).
+
+How you verified the output is correct:
+
+I used a calculator which I knew to be correct to test more complex numbers.
+I also solved simpler problems by hand to ensure that they were correct. These
+problems included operations between two positive numbers, one positive and
+one negative, both negative, etc.
+I also ensured that the menu worked correctly by going through each option in
+every order to guarentee that no bugs were present in the code.

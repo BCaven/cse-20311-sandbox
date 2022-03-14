@@ -1,0 +1,29 @@
+Lab 5 | report.txt | John Blake Caven
+
+How the program works from a user's perspective:
+From the user's perspective, they navigate through a menu to either read the contents of a file, add a new saying to the file, 
+search for sayings containing certain words, sort the sayings, or copy the sayings into a new file. They navigate the menu through
+a series of prompts in the terminal. If they enter an invalid input, the program informs them of this and reprompts the menu.
+Upon picking a valid item in the menu, the program either outputs the desired result which was specified by the menu item, or 
+reprompts the user for more inputs which are required by the option they selected. If the user enters a file name that does not exist
+the program informs them that the file does not exist and the program ends.
+
+How the program works internally:
+Internally, the program separates each menu item into a separate function which is called via a switch statement. This is done to 
+ensure the cleanliness of the main() function. the user is then prompted to input a number and that number is passed to the switch statement.
+The switch statement then calls specific functions depending on the input. When the program first loads, it prompts for a file name
+and checks if the file exists. If the file does not exist, the program outputs an error message and ends.
+If the file exists, the program pulls the text data into a two dimensional char array. That array is passed into each function and is
+how the program runs through the file's data. When running through the menu, the program has the file opened in the 'append' mode
+so new sayings can be added to the file. Within the functions, other files are opened and closed accordingly.
+Each function is rather straight forward - they print the array, write the array to a file, search through the array, sort the array,
+or write to the array.
+For the sort and search functions, heavy use is made of <string.h> and its string manipulation functions as well as character comparisons
+to cover the gaps in <string.h>'s functions, specifically the strcpy() and strlen() functions.
+
+How you verified the output was correct:
+Each condition (including invalid input) was tested extensively to make sure the menu worked as expected. Each function was tested by
+printing out each step in the function (these print statements were removed or commented out of the final code so the menu remained clean).
+The files were then confirmed by looking at them with a different text editor, as well as by re-running the program with the same file.
+An example file is included in the /part2/ subfolder.
+

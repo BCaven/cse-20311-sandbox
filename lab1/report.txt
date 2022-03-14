@@ -1,0 +1,18 @@
+Lab 1 | John Blake Caven | 1/24/22 | Lab Report
+
+For part 2, I chose to make a program which calculates the cross product of two three dimensional
+vectors. The user is asked for each component (x, y, z) for each vector, and upon entering this
+information, the program outputs a new vector which is the cross product. It is important to note
+that the program only finds one of the possible cross product vectors, there is another cross 
+product vector that is the inverse of the one calculated (if the calculated vector is v, the other
+normal vector is equal to v * -1).
+
+The program is relatively simple in its construction. It breaks each vector component (i, j, k)
+into a separate variable. Then it requests the two vectors upon which the cross product will be
+performed using a scanf() function. Finally, the program calculates the components of the resulting
+vector and outputs it in the format <x, y, z>.
+
+I evaluated the program for correctness by comparing it to other cross product calculator which
+are known to be correct. There is a single case in which it produces incorrect results, which is
+when the two vectors are parallel to eachother in which case there are infinitely many normal vectors
+and the calculator returns the vector <0, 0, 0>.

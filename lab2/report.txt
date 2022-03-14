@@ -1,0 +1,12 @@
+How the ASCII Plot works from a user's perspective:
+From the user's perspective, they enter the range and the program outputs a crude graph and table of the function on the range they specified. The user is unable to
+change the equation, but they are able to see what the equation is. After the graph is finished processing, the program tells the user what the maximum and minimum
+values were and at what x coordinates they occured.
+How the ASCII Plot works from an internal perspective:
+From an internal perspective, the program takes a hard-coded function, and runs it through a given range (starting at zero, until a user-specified stop coordinate).
+It uses two for-loops: one is used to iterate the function through the range, and the other is used to produce the graph. It first calculates the y value at the x value
+given to it by the for loop, then it runs the second for loop through the calculated y value, printing a "#" at each step. The program then checks if the calculated value
+is either greater than the current maximum, or less than the current minimum. If either is true, the new maximum/minimum is set to that x, y pair.
+After the program has finished iterating through the range, it prints the final maximum and minimum values.
+How the output was verified:
+The output was verified using the graphing tool "Desmos" which was previously known to be reliable.
