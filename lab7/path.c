@@ -8,7 +8,11 @@
 */
 
 /*
-structs
+structs are fun
+
+need to make file scraper
+
+use pointers! they will make your life easier
 
 
 
@@ -19,11 +23,16 @@ structs
 #include <stdio.h>
 
 int main(void) {
-    struct point {
+    typedef struct {
         int x;
         int y;
-    }
-    
+    } point;
+
+    point a;
+    a.x = 1;
+    a.y = 2;
+
+    printf("x: %d y: %d\n", a.x, a.y);
 
 
     return 0;
