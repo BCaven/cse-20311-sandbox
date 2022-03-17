@@ -103,10 +103,11 @@ void getFileData(FILE *f, point *arrayOfPoints) { // alright, we can iterate thr
             double num;
             // so, we wrote the char array so it will look something like
             /*
-            {'0', '0', '1'}
+            {'0', '0', '1', '0'}
             up to
-            {'-', '9', '9'}
+            {'-', '9', '9', '9'}
             */
+            printf("Temp[1] %d Temp[2] %d Temp[3] %d\n", temp[1]-'0', temp[2]-'0', temp[3]-'0');
             num = ((10 * (temp[1]-'0')) + (temp[2]-'0')) + ((temp[3]-'0') / (10.0));
             // then check for the negative
             if (temp[0] == '-') {
@@ -123,13 +124,14 @@ void getFileData(FILE *f, point *arrayOfPoints) { // alright, we can iterate thr
                 current = 'x';
             }
             printf(" Hit a break\n");
-            p+=1;
-            pt=2;
+            p += 1;
+            pt = 2;
             // reset temp!
             int j;
             for (j = 0; j < 4; j+=1) {
                 temp[j] = '0';
             }
+            printf("\nreset temp: %s\n", temp);
         }
         c = fgetc(f);
     }
