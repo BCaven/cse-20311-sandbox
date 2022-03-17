@@ -23,25 +23,8 @@ I hate C files. I hate them so much.
 
 */
 
-
-
+#include "pathfunc.h"
 #include <stdio.h>
-#include <math.h>
-#include <string.h>
-#include <ctype.h>
-/*
-Functions I need:
-getDistance(point1, point2);
-displayTable(*arrayOfPoints, int lenOfArray);
-*/
-
-typedef struct {
-        double x;
-        double y;
-} point; // having fun
-double getDistance(point a, point b);
-void displayTable(point p[30]);    
-void getFileData(FILE *f, point *arrayOfPoints);
 
 int main(void) {
     char fname[30];
@@ -49,27 +32,23 @@ int main(void) {
     scanf("%s", &fname);
     // get the file
     FILE *f = fopen(fname, "r");
-    point *points;
-    getFileData(f, points);
-    point a;
-    a.x = 10;
-    a.y = 5;
-    printf("%d %d\n", a.x, a.y);
+    getFileData(f);
+    
+    /*
+    int i;
+    for (i = 0; i < 30; i+=1) {
+        printf("%lf %lf\n", p[i].x, p[i].y);
+    }
+    */
 
     return 0;
 }
 
-double getDistance(point a, point b) {
-    return 0.0;
-    //return sqrt(((b.x-a.x)*(b.x-a.x)) + ((b.y-a.y)*(b.y-a.y))); // whooo - standard distance formula
+float getDistance(point a, point b) {
+    float sq = sqrtf(((b.x-a.x)*(b.x-a.x)) + ((b.y-a.y)*(b.y-a.y))); // whooo - standard distance formula
+    return sq;
 }
-void displayTable(point p[30]) {
-    int i;
-    for (i = 0; i < 30; i+=1) { // print the points
-
-    }
-}
-void getFileData(FILE *f, point *arrayOfPoints) { // alright, we can iterate through the entire file
+void getFileData(FILE *f) { // alright, we can iterate through the entire file
     char c = fgetc(f); // assuming the file has already been assigned
     /*
     so, we are going through the individual characters, which means we have to harvest numbers
@@ -79,27 +58,24 @@ void getFileData(FILE *f, point *arrayOfPoints) { // alright, we can iterate thr
     char temp[4] = {'0', '0', '0', '0'}; // temp[3] is reserved for decimal places
     char current = 'x'; // what value in that point we are writing to
     int p = 0; // what point we are currently writing to
-    int pt = 2; // where we are in the temp array
     float num; // just gonna throw it out here to see if it makes a difference... probably not
     point tempPoints[30];
     while (c != EOF) {
         if (c != ' ' && c != '\n') {
-            printf("%c\n", c);
-            if (pt >= 0) {
-                if (c == '.') {
-                    c = fgetc(f);
-                    printf("\nCurrent C: %c\n", c);
-                    temp[3] = c;
-                } else if (c == '-') {
-                    temp[0] = c;
+            //printf("%c\n", c);
+            if (c == '.') {
+                c = fgetc(f);
+                //printf("\nCurrent C: %c\n", c);
+                temp[3] = c;
+            } else if (c == '-') {
+                temp[0] = c;
 
-                } else {
-                    temp[pt] = c;
-                    pt-=1; // this should never get below 0, but we will check anyways
-            
-                }
+            } else if (temp[2] != '0') { // we already filled a number, but now we have to add the second digit -> we are going to filp them so they are in the right order
+                temp[1] = temp[2];
+                temp[2] = c;
+            } else {
+                temp[2] = c;
             }
-            printf("Temp: %s\n", temp);
         } else {
             
             // so, we wrote the char array so it will look something like
@@ -108,34 +84,43 @@ void getFileData(FILE *f, point *arrayOfPoints) { // alright, we can iterate thr
             up to
             {'-', '9', '9', '9'}
             */
-            printf("Temp[1] %d Temp[2] %d Temp[3] %d\n", temp[1]-'0', temp[2]-'0', temp[3]-'0');
+            //printf("Temp[1] %d Temp[2] %d Temp[3] %d\n", temp[1]-'0', temp[2]-'0', temp[3]-'0');
             num = ((10 * (temp[1]-'0')) + (temp[2]-'0')) + ((temp[3]-'0') / (10.0));
             // then check for the negative
             if (temp[0] == '-') {
-                printf("making the number negative\n");
+                //printf("making the number negative\n");
                 num = num * -1.0;
             }
             if (current == 'x') {
-                printf("\nadding %lf to x\n", num);
+                //printf("adding %lf to x\n", num);
                 tempPoints[p].x = num;
                 current = 'y';
             } else {
-                printf("\nadding %lf to y\n", num);
+                //printf("adding %lf to y\n", num);
                 tempPoints[p].y = num;
                 p+=1;
                 current = 'x';
             }
-            printf(" Hit a break\n");
-            p += 1;
-            pt = 2;
             // reset temp!
             int j;
             for (j = 0; j < 4; j+=1) {
                 temp[j] = '0';
             }
-            printf("\nreset temp: %s\n", temp);
+            //printf("\nreset temp: %s\n", temp);
         }
         c = fgetc(f);
     }
-    arrayOfPoints = &tempPoints;
+    printf("There are %d points\n", p);
+    printf("\n  x    |    y  \n");
+    printf("---------------\n");
+    
+    int i;
+    for (i = 0; i < p; i += 1) {
+        printf(" %4.1lf  |  %4.1lf\n", tempPoints[i].x, tempPoints[i].y);
+    }
+    float dist = 0;
+    for (i = 0; i < p-1; i+=1) {
+        dist += getDistance(tempPoints[i], tempPoints[i+1]);
+    }
+    printf("\nThe path distance through them is %4.2lf\n", dist);
 }
