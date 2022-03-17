@@ -1,3 +1,12 @@
+/*
+    @author: John Blake Caven
+    @name: pathfunc.h
+    @date: 3-16-22
+
+    Lab 7: Part 1
+
+*/
+
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
