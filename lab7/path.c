@@ -80,6 +80,7 @@ void getFileData(FILE *f, point *arrayOfPoints) { // alright, we can iterate thr
     char current = 'x'; // what value in that point we are writing to
     int p = 0; // what point we are currently writing to
     int pt = 2; // where we are in the temp array
+    float num; // just gonna throw it out here to see if it makes a difference... probably not
     point tempPoints[30];
     while (c != EOF) {
         if (c != ' ' && c != '\n') {
@@ -89,7 +90,7 @@ void getFileData(FILE *f, point *arrayOfPoints) { // alright, we can iterate thr
                     c = fgetc(f);
                     printf("\nCurrent C: %c\n", c);
                     temp[3] = c;
-                } if (c == '-') {
+                } else if (c == '-') {
                     temp[0] = c;
 
                 } else {
@@ -100,7 +101,7 @@ void getFileData(FILE *f, point *arrayOfPoints) { // alright, we can iterate thr
             }
             printf("Temp: %s\n", temp);
         } else {
-            double num;
+            
             // so, we wrote the char array so it will look something like
             /*
             {'0', '0', '1', '0'}
@@ -111,14 +112,15 @@ void getFileData(FILE *f, point *arrayOfPoints) { // alright, we can iterate thr
             num = ((10 * (temp[1]-'0')) + (temp[2]-'0')) + ((temp[3]-'0') / (10.0));
             // then check for the negative
             if (temp[0] == '-') {
-                num = num * -1;
+                printf("making the number negative\n");
+                num = num * -1.0;
             }
             if (current == 'x') {
-                printf("\nadding %d to x\n", num);
+                printf("\nadding %lf to x\n", num);
                 tempPoints[p].x = num;
                 current = 'y';
             } else {
-                printf("\nadding %d to y\n", num);
+                printf("\nadding %lf to y\n", num);
                 tempPoints[p].y = num;
                 p+=1;
                 current = 'x';
