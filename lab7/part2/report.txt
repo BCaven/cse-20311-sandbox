@@ -1,0 +1,28 @@
+report.txt | John Blake Caven | 3-21-22
+How part 2 works from a user's perspective:
+From a user's perspective, they are prompted to input a file containing csv data, then are presented with a menu of options.
+When selecting an option, some of the options have their own required inputs which the user is then prompted to input.
+Some of the menu items require no further user input and simply display the desired choice to the screen.
+When the user types an invalid input, the program informs them that the input was invalid or not present in the list then reprompts the menu.
+The user also discovers that the program is not case-sensitive, and will read "fL," "fl," "Fl," and "FL" as the same values.
+There is also an option on the menu to quit, and when the user selects this, a message pops up and the program ends.
+
+How part 2 works internally:
+THe program is split up into many functions to perform each task. Most of the functions require access to the array of States, and the array is passed to them
+so that each function modifies the actual array and does not need to return anything. However, some of the functions return values such as the length of the array.
+For example, the function which gathers the raw data from the CSV file returns the length of the array. This length is then passed to all of the other functions so 
+they can more-efficiently use the array. To gather the CSV data, the program looks at individual characters and adds them to a temporary character array. Upon hitting
+either a ',' or '\n' the program sets the corresponding struct's component to the temp value and clears the temp char array. The program does this until there is no 
+more data in the CSV. The other functions are relatively simple. They primarly utilize for loops to itterate through the array of States and print the desired output.
+For example, the option which finds states which joined during a certain year uses a for loop to go through the entire array, and checks the value of .yearJoined in every
+State. If the value of .yearJoined is the same as the year which the user entered, the program prints the state's name along with its other data. If no states joined during
+the selected year, the program outputs a message saying that no states joined during that year.
+The program contains a struct called State. The struct has four components: "abbr," "name," "capital," and "yearJoined." These respectively are the state's abbreviation, 
+the state's full name, the capital of the state, and the year the state joined the USA. The Struct is used in an array to store the information of each state.
+The program is also split into a main file, a functions file, and a header file. These are then assembled into an executable by a Makefile.
+The program is case-insensitive by converting all inputs into uppercase and comparing them to the uppercase equivalents of the States' data. It does this using for loops and the
+toupper() function.
+
+How the output was tested:
+The output was hand-tested by testing all possible input scenarios, as well as manually calculating the answer to ensure that the program is correct.
+
