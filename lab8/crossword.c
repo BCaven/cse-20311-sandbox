@@ -6,6 +6,15 @@ typedef struct {
     char *word;
     int len;
 } word;
+
+typedef struct {
+    char letter;
+    int x;
+    int y;
+    char dir;
+} letterPlacement;
+
+
 void initBoard(char board[15][15], int type);
 void printWords(char words[20][15], int len);
 void printBoard(char board[15][15]);
@@ -13,6 +22,7 @@ int readFile(FILE *f, char board[15][15]);
 int interactiveInput(char board[15][15]);
 void toUpperCase(char word[20], int len);
 void sortWords(char words[20][15], int numWords);
+void placeWords(char words[20][15], int numWords, char board[15][15], letterPlacement letters[300]);
 int main(void) {
     char fName[30];
     printf("Get the file name:\n");
@@ -30,7 +40,7 @@ int main(void) {
     printBoard(dotBoard);
     printf("Crossword:\n");
     printBoard(hashBoard);
-    
+    /*
     int numWords = interactiveInput(words);
     printf("Original list:\n");
     printWords(words, numWords);
@@ -44,20 +54,30 @@ int main(void) {
     printf("Sorted:\n");
     sortWords(words, numWords);
     printWords(words, numWords);
+    */
     printf("\n\n-----------\n\n");
     char fileWords[20][15];
+    
     FILE *f;
     printf("bang\n");
     if (fopen(fName, "r") == NULL) {
         printf("File not found\n");
         return 0;
     }
+
     f = fopen(fName, "r");
-    printf("File opened\n");
+    //printf("File opened\n");
     int fLen = readFile(f, fileWords);
+    fclose(f);
     printf("List from file:\n");
     printWords(fileWords, fLen);
-    fclose(f);
+    printf("Sorted and Capitalized:\n");
+    sortWords(fileWords, fLen);
+    int i;
+    for (i = 0; i < fLen; i+=1) {
+        toUpperCase(fileWords[i], strlen(fileWords[i]));
+    }
+    printWords(fileWords, fLen);
     
     return 0;
 }
@@ -96,28 +116,24 @@ int readFile(FILE *f, char board[20][15]) {
     while (currentWord != NULL) {
         // remove the newline character
         char *clean = strtok(currentWord, "\n");
-        printf("clean: %s\n", clean);
+        //printf("clean: %s\n", clean);
         strcpy(currentWord, clean);
         int lenWord = strlen(currentWord);
         // get all the words
 
-        printf("strcmp %s : '.' = %d\n", currentWord, strcmp(currentWord, ".")); // for some reason it is missing the last two words
+        //printf("strcmp %s : '.' = %d\n", currentWord, strcmp(currentWord, ".")); // for some reason it is missing the last two words
         
         if (feof(f) || strcmp(currentWord, ".") == 0) {
             return numWords;
         }
-        
-        //printf("word: %s\n", currentWord);
         if (strlen(currentWord) < 15) {
             strcpy(board[numWords], currentWord);
-            printf("copying %s to place %d\n", currentWord, numWords);
+            //printf("copying %s to place %d\n", currentWord, numWords);
             numWords +=1;
         } else {
-            printf("%s is too long\n", currentWord);
+            // debugging
+            //printf("%s is too long\n", currentWord);
         } 
-
-
-
         fgets(currentWord, 30, f);
     }
     return numWords;
@@ -176,5 +192,11 @@ void sortWords(char words[20][15], int numWords) {
             }
         }
     }
+
+}
+
+void placeWords(char words[20][15], int numWords, char board[15][15], letterPlacement letters[300]) {
+    // place the first word:
+    
 
 }
