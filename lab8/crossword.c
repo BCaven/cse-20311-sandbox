@@ -194,7 +194,9 @@ void sortWords(char words[20][15], int numWords) {
     }
 
 }
-
+char findCharAtCoord(int x, int y, letterPlacement letters[300]) {
+    return 0; // might not need this after all
+}
 void placeWord(char word[20], int len, char board[15][15], letterPlacement letters[300], int numLettersPlaced) {
     // place the first word:
     int i, j, x, y, dir;
@@ -206,23 +208,74 @@ void placeWord(char word[20], int len, char board[15][15], letterPlacement lette
                 y = letters[i].y;
                 dir = letters[i].dir;
                 // check the coordinate and perpendicular directions
+                int finalDir[4] = {1, 1, 1, 1}; // down, up, right, left
                 if (dir == 0) { // up/down
+                    finalDir[2] = -1;
+                    finalDir[3] = -1;
                     int pos;
-                    for (pos = 0; pos < len; pos+=1) { // down
-                        
+                    if (y+(len-j) < 15 && y-(j) > 0) {
+                        for (pos = 0-j; pos < len-j; pos+=1) { // down
+                            if (board[x][y+pos] == '.' || board[x][y+pos] == word[pos+j]) {
+                                // good
+                            } else {
+                                // bad
+                                printf("Fail.\n");
+                                finalDir[0] = -1;
+                            }
+                        }
+                    } else {
+                        printf("Out of bounds.\n");
+                        finalDir[0] = -1;
                     }
-                    for (pos = 0; pos > -len; pos-=1) { // up
-
+                    if (y - (len-j) > 0 && y+j < 15) {
+                        for (pos = 0+j; pos > -(len-j); pos-=1) { // up
+                            if (board[x][y+pos] == '.' || board[x][y+pos] == word[pos+j]) {
+                                // good
+                            } else {
+                                // bad
+                                printf("Fail.\n");
+                                finalDir[1] = -1;
+                            }
+                        }
+                    } else {
+                        printf("Out of bounds.\n");
+                        finalDir[1] = -1;
                     }
                 } else { // right/left
+                    finalDir[0] = -1;
+                    finalDir[1] = -1;
                     int pos;
-                    for (pos = 0; pos < len; pos+=1) { // right
-                        
+                    if (x+(len-j) < 15 && x-(j) > 0) {
+                        for (pos = 0-j; pos < len-j; pos+=1) { // right
+                            if (board[x+pos][y] == '.' || board[x+pos][y] == word[pos+j]) {
+                                // good
+                            } else {
+                                // bad
+                                printf("Fail.\n");
+                                finalDir[2] = -1;
+                            }
+                        }
+                    } else {
+                        printf("Out of bounds.\n");
+                        finalDir[2] = -1;
                     }
-                    for (pos = 0; pos > -len; pos-=1) { // left
-
+                    if (x - (len-j) > 0 && x+j < 15) {
+                        for (pos = 0+j; pos > -(len-j); pos-=1) { // left
+                            if (board[x+pos][y] == '.' || board[x+pos][y] == word[pos+j]) {
+                                // good
+                            } else {
+                                // bad
+                                printf("Fail.\n");
+                                finalDir[3] = -1;
+                            }
+                        }
+                    } else {
+                        printf("Out of Bounds.\n");
+                        finalDir[3] = -1;
                     }
                 }
+                // check to see what path worked
+
 
 
 
