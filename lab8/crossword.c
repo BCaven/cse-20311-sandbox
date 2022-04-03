@@ -11,7 +11,7 @@ typedef struct {
     char letter;
     int x;
     int y;
-    char dir;
+    int dir;
 } letterPlacement;
 
 
@@ -22,7 +22,7 @@ int readFile(FILE *f, char board[15][15]);
 int interactiveInput(char board[15][15]);
 void toUpperCase(char word[20], int len);
 void sortWords(char words[20][15], int numWords);
-void placeWords(char words[20][15], int numWords, char board[15][15], letterPlacement letters[300]);
+void placeWord(char word[20], int len, char board[15][15], letterPlacement letters[300], int numLettersPlaced);
 int main(void) {
     char fName[30];
     printf("Get the file name:\n");
@@ -195,8 +195,48 @@ void sortWords(char words[20][15], int numWords) {
 
 }
 
-void placeWords(char words[20][15], int numWords, char board[15][15], letterPlacement letters[300]) {
+void placeWord(char word[20], int len, char board[15][15], letterPlacement letters[300], int numLettersPlaced) {
     // place the first word:
+    int i, j, x, y, dir;
+    for (i = 0; i < numLettersPlaced; i+=1) {
+        char searchChar = letters[i].letter;
+        for (j = 0; j < len; j+=1) {
+            if (word[j] == searchChar) {
+                x = letters[i].x;
+                y = letters[i].y;
+                dir = letters[i].dir;
+                // check the coordinate and perpendicular directions
+                if (dir == 0) { // up/down
+                    int pos;
+                    for (pos = 0; pos < len; pos+=1) { // down
+                        
+                    }
+                    for (pos = 0; pos > -len; pos-=1) { // up
+
+                    }
+                } else { // right/left
+                    int pos;
+                    for (pos = 0; pos < len; pos+=1) { // right
+                        
+                    }
+                    for (pos = 0; pos > -len; pos-=1) { // left
+
+                    }
+                }
+
+
+
+
+                break;
+            }
+        }
+    }
+    if (x == NULL) {
+        printf("The word cannot be placed because no letters matched\n");
+        return;
+    }
+
+
     
 
 }
