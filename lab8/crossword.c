@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
-
+/*
 typedef struct {
     char *word;
     int len;
 } word;
-
+*/
 typedef struct {
     char letter;
     int x;
@@ -198,7 +198,7 @@ char findCharAtCoord(int x, int y, letterPlacement letters[300]) {
     return 0; // might not need this after all
 }
 void placeWord(char word[20], int len, char board[15][15], letterPlacement letters[300], int numLettersPlaced) {
-    // place the first word:
+    
     int i, j, x, y, dir;
     for (i = 0; i < numLettersPlaced; i+=1) {
         char searchChar = letters[i].letter;
@@ -275,12 +275,33 @@ void placeWord(char word[20], int len, char board[15][15], letterPlacement lette
                     }
                 }
                 // check to see what path worked
+                if (finalDir[0] == 1) { // add the word down
+                    int cL;
+                    for (cL = 0; cL < len; cL+=1) {
+                        board[x][y-j+cL] = word[cL];
+                        // add character to char array
+                    }
+                } else if (finalDir[1] == 1) { // add the word up
+                    int cL;
+                    for (cL = 0; cL < len; cL+=1) {
+                        board[x][y+j-cL] = word[cL];
+                    }
+                } else if (finalDir[2] == 1) { // add the word to the right
+                    int cL;
+                    for (cL = 0; cL < len; cL+=1) {
+                        board[x-j+cL][y] = word[cL];
+                    }
+                } else if (finalDir[3] == 1) { // add the word to the left
+                    int cL;
+                    for (cL = 0; cL < len; cL+=1) {
+                        board[x+j-cL][y] = word[cL];
+                    }
+                }
 
 
 
-
-
-                break;
+                return;
+                //break;
             }
         }
     }
