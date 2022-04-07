@@ -91,6 +91,8 @@ int main(int argc, char *argv) {
 
     free(mallocTest);
 
+    printf("%d\n", fact(5));
+
 
     return 0;
 }
@@ -121,3 +123,5 @@ int* returningPointer(int len) {
     }
     return &a;
 }
+
+int fact(int x) {return x > 1 ? fact(x-1)*x : 1;}
