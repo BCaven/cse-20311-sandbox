@@ -23,12 +23,20 @@ int main(void) {
     point mouse;
     mouse.x = width/2;
     mouse.y = height/2;
+    int SIZE = 50;
     while (1) {
         int in = gfx_event_waiting();
+        char pressed;
         if (in) {
+            pressed = gfx_wait();
             mouse = getMouse();
         }
-
+        if (pressed == 1) { // mouse1 pressed, blue square outline of SIZE
+            gfx_line(mouse.x - (SIZE/2), mouse.y - (SIZE/2), mouse.x + (SIZE/2), mouse.y - (SIZE/2)); // top edge
+            gfx_line(mouse.x - (SIZE/2), mouse.y - (SIZE/2), mouse.x - (SIZE/2), mouse.y + (SIZE/2)); // left edge
+            gfx_line(mouse.x + (SIZE/2), mouse.y - (SIZE/2), mouse.x + (SIZE/2), mouse.y + (SIZE/2));
+            gfx_line(mouse.x + (SIZE/2), mouse.y + (SIZE/2), mouse.x - (SIZE/2), mouse.y + (SIZE/2));
+        }
         gfx_color((1.0 * mouse.x/width) * 250, (1.0 * mouse.y/height) * 250, ((1.0 * mouse.x + mouse.y) / (width + height)) * 250);
         gfx_circle(mouse.x, mouse.y, 10);
         
