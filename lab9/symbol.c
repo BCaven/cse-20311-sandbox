@@ -6,7 +6,9 @@
     Lab 9 : Part 1
 */
 #include <stdio.h>
+#include <math.h>
 #include "gfx.h"
+#define PI 3.14159
 
 typedef struct {
     int x;
@@ -45,6 +47,20 @@ int main(void) {
             gfx_line(mouse.x, mouse.y - (SIZE/3), mouse.x + (SIZE/3), mouse.y + (SIZE/3));
             gfx_line(mouse.x + (SIZE/3), mouse.y + (SIZE/3), mouse.x - (SIZE/3), mouse.y + (SIZE/3));
             gfx_line(mouse.x - (SIZE/3), mouse.y + (SIZE/3), mouse.x, mouse.y - (SIZE/3));
+        } else if (pressed >= '3' && pressed <= '9') { // regular sided polygons
+            // ugh these are annoying
+            gfx_color(200, 200, 200);
+            gfx_circle(mouse.x, mouse.y, SIZE/2); // drawing the circle for reference
+            gfx_color(128, 0, 128);
+            int sides = pressed - '0'; // number of sides the shape is going to have
+            double i;
+            for (i = 0; i < 2*PI; i += (2*(PI))/sides) {
+                double oldI = i - (2*PI)/sides;
+                gfx_line(SIZE*(cos(i)), SIZE*(sin(i)), SIZE*(cos(oldI)), SIZE * (sin(oldI)));
+
+            }
+
+
         } else if (pressed == 27) {
             gfx_clear();
         } else if (pressed == 'q') {
