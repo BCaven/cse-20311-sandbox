@@ -32,13 +32,26 @@ int main(void) {
             mouse = getMouse();
         }
         if (pressed == 1) { // mouse1 pressed, blue square outline of SIZE
+            gfx_color(0, 0, 255);
             gfx_line(mouse.x - (SIZE/2), mouse.y - (SIZE/2), mouse.x + (SIZE/2), mouse.y - (SIZE/2)); // top edge
             gfx_line(mouse.x - (SIZE/2), mouse.y - (SIZE/2), mouse.x - (SIZE/2), mouse.y + (SIZE/2)); // left edge
             gfx_line(mouse.x + (SIZE/2), mouse.y - (SIZE/2), mouse.x + (SIZE/2), mouse.y + (SIZE/2));
             gfx_line(mouse.x + (SIZE/2), mouse.y + (SIZE/2), mouse.x - (SIZE/2), mouse.y + (SIZE/2));
+        } else if (pressed == 'c') { // 'c' pressed, white circle
+            gfx_color(255, 255, 255);
+            gfx_circle(mouse.x, mouse.y, SIZE/2);
+        } else if (pressed == 't') { // green triangle around cursor
+            gfx_color(0, 255, 0);
+            gfx_line(mouse.x, mouse.y - (SIZE/3), mouse.x + (SIZE/3), mouse.y + (SIZE/3));
+            gfx_line(mouse.x + (SIZE/3), mouse.y + (SIZE/3), mouse.x - (SIZE/3), mouse.y + (SIZE/3));
+            gfx_line(mouse.x - (SIZE/3), mouse.y + (SIZE/3), mouse.x, mouse.y - (SIZE/3));
+        } else if (pressed == 27) {
+            gfx_clear();
+        } else if (pressed == 'q') {
+            return 0;
         }
-        gfx_color((1.0 * mouse.x/width) * 250, (1.0 * mouse.y/height) * 250, ((1.0 * mouse.x + mouse.y) / (width + height)) * 250);
-        gfx_circle(mouse.x, mouse.y, 10);
+        //gfx_color((1.0 * mouse.x/width) * 250, (1.0 * mouse.y/height) * 250, ((1.0 * mouse.x + mouse.y) / (width + height)) * 250);
+        //gfx_circle(mouse.x, mouse.y, 10);
         
     }
 
