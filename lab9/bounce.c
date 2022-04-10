@@ -12,6 +12,7 @@
 #include <unistd.h> // needed for sleep function
 #include <stdlib.h> // needed for rand function
 
+// structs
 typedef struct {
     int x;
     int y;
@@ -27,20 +28,14 @@ typedef struct {
     int r;
     color c;
 } ball;
-
-// user functions
-
-
 // ball functions
 void updateBall(ball *a, int width, int height);
 void updateBounce(ball *a, int width, int height);
 void draw(ball a);
-
 // constructors
 color Color(int r, int g, int b);
 ball Ball(int x, int y, int xVel, int yVel, int r, color c);
 point getMouse();
-
 int main(void) {
     int width = 500;
     int height = 400;
@@ -52,16 +47,13 @@ int main(void) {
     char *name = "Bounce";
     gfx_open(width, height, name);
     gfx_clear();
-
     // ok, so we need to seed the random function, and tbh I dont really want to also import the time function because we dont care if it isnt truly random
-    // instead I am going to use the pointer to width
-    srand((unsigned int) &width);
-    int maxVel = 30;
-    ball b = Ball(width/2, height/2, (rand() % maxVel) - (maxVel/2), (rand() % maxVel) - (maxVel/2), 10, blue);
-    point mouse;
-    
-    
-    
+    // instead I am going to use the memory location of width
+    srand((unsigned int) &width); // I dont care that this throwws a warning... it works for this purpose.
+    int maxVel = 10;
+    ball b = Ball(width/2, height/2, (rand() % maxVel) - (maxVel/2), (rand() % maxVel) - (maxVel/2), 10, blue); // the first ball
+    point mouse; // where the mouse is
+    // the main draw loop
     while (1) {
         gfx_clear();
         int in = gfx_event_waiting(); // yes, I DID reuse my code from symbol.c
@@ -79,12 +71,9 @@ int main(void) {
         updateBall(&b, width, height);
         draw(b);
         gfx_flush();
-        usleep(100);
+        usleep(10000);
     }
-
-    
-
-
+    return 0; // this will never get hit, but just in case :D
 }
 point getMouse() {
     point p;
