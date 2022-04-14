@@ -2,6 +2,10 @@
 #include <math.h>
 #include "gfx.h"
 #define PI 3.1415926535
+typedef struct {
+    int x;
+    int y;
+} point;
 void sierpinski(int x1, int y1, int x2, int y2, int x3, int y3, int n);
 void triangle(int x1, int y1, int x2, int y2, int x3, int y3);
 void shrinkingSquares(int x, int y, int size, int n);
@@ -12,6 +16,8 @@ void snowFlake(int x, int y, int oldX, int oldY, int size, int petals, int n);
 void treeFractal(int x, int y, int branches, int size, double theta, int n);
 void fernFractal(int x, int y, int branches, int size, double theta, int n, int tn);
 void spiralFractal(int x, int y, int size, double n, double max);
+point spiralHelper(int x, int y, int size, double theta);
+void drawSpiral(int x, int y, int size, double maxTheta);
 int main(void) {
     int width = 500;
     int height = 500;
@@ -36,7 +42,8 @@ int main(void) {
             int n = 2;
             fernFractal(width/2, height * (.9), 2, width/6, 0, n, n);
         } else if (c == '8') {
-            spiralFractal(width/2, height/2, 10, 0, 2*PI);
+            drawSpiral(width/2, height/2, 10, 2*PI);
+            //spiralFractal(width/2, height/2, 10, 0, 2*PI);
         } else if (c == 'q') {
             return 0;
         } else {
@@ -123,14 +130,9 @@ void treeFractal(int x, int y, int branches, int size, double theta, int n) {
     }
 }
 void fernFractal(int x, int y, int branches, int size, double theta, int n, int tn) {
-    if (size < 1) {
+    if (size < 1 || n < 0) {
         return;
-    }
-    
-    if (n < 0) {
-        return;
-    }
-    
+    }    
     int newX = x + (size*sin(theta));
     int newY = y - (size*cos(theta));
     gfx_line(x, y, newX, newY);
@@ -144,12 +146,21 @@ void fernFractal(int x, int y, int branches, int size, double theta, int n, int 
     }
 
 }
-void spiralFractal(int x, int y, int size, double n, double max) {
-    square(x, y, 1);
-    if (n > max) {
-        return;
+point spiralHelper(int x, int y, int size, double theta) {
+    // returns where the spiral is at the angle theta given its size and initial position
+    point p;
+    p.x = x + (size * cos(theta));
+    p.y = y + (size * cos(theta));
+    return p;
+}
+void drawSpiral(int x, int y, int size, double maxTheta) {
+    double i;
+    for (i = 0; i < maxTheta-(maxTheta/200); i+=maxTheta/200) {
+        int nextX = x + ((size*i) * (cos(i + (maxTheta/200))));
+        int nextY = y + ((size*i) * (sin(i + (maxTheta/200))));
+        gfx_line(x + ((size*i)*cos(i)), y + ((size*i)*sin(i)), nextX, nextY);
     }
-    double c = .1;
-    spiralFractal(x + (cos(n) * (c)), y + (sin(n) * (c)), size, n+.5, max);
-    spiralFractal(x + (cos(n) * (size*2)), y + (sin(n) * (size*2)), size + (n/4), n+.5, max); // Mmmmmmmm
+}
+void spiralFractal(int x, int y, int size, double n, double max) {
+    
 }
