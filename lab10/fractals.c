@@ -18,7 +18,7 @@ void fernFractal(int x, int y, int branches, int size, double theta, int n, int 
 void spiralFractal(int x, int y, int size, double n, double max);
 point spiralHelper(int x, int y, int size, double theta);
 void drawSpiral(int x, int y, double size, double maxTheta, int maxSize);
-void drawConstrainedSpiral(int xc, int yc, int maxR, double maxTheta);
+void drawConstrainedSpiral(int xc, int yc, double maxR, double maxTheta, double theta, double startTheta);
 int main(void) {
     int width = 500;
     int height = 500;
@@ -43,8 +43,10 @@ int main(void) {
             int n = 2;
             fernFractal(width/2, height * (.9), 2, width/6, 0, n, n);
         } else if (c == '8') {
-            int size = 20;
-            drawSpiral(width/2, height/2, size, 4*PI, size);
+            int size = 400;
+            drawConstrainedSpiral(width/2, height/2, size, 6*PI, 0, 0);
+            gfx_circle(width/2, height/2, size);
+            //drawSpiral(width/2, height/2, size, 4*PI, size);
             //spiralFractal(width/2, height/2, 1, 0, 2*PI);
             //spiralFractal(width/2, height/2, 10, 0, 2*PI);
         } else if (c == 'q') {
@@ -149,38 +151,29 @@ void fernFractal(int x, int y, int branches, int size, double theta, int n, int 
     }
 
 }
-point spiralHelper(int x, int y, int size, double theta) {
-    // returns where the spiral is at the angle theta given its size and initial position
-    point p;
-    p.x = x + ((size) * cos(theta));
-    p.y = y + ((size) * sin(theta));
-    return p;
-}
 double distance(int x1, int y1, int x2, int y2) {
     return sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
 }
-void drawSpiral(int x, int y, double size, double maxTheta, int maxSize) {
-    double i;
-    for (i = 0; i < maxTheta-(maxTheta/20.0); i+=maxTheta/20.0) {
-        int nextX = x + ((size*i) * (cos(i + (maxTheta/20))));
-        int nextY = y + ((size*i) * (sin(i + (maxTheta/20))));
-        gfx_point(x + ((size*i)*cos(i)), y + ((size*i)*sin(i)));
-        int r = (int) (distance(x + ((size*i)*cos(i)), y + ((size*i)*sin(i)), nextX, nextY));
-    }
-}
-void drawConstrainedSpiral(int xc, int yc, int maxR, double maxTheta, double theta) {
-    double i;
-    double s = maxR/maxTheta;
-    int nextX = x + (s*theta) * (cos(theta)));
-    for (i = maxTheta; i > 0; i-=maxTheta/20) {
-
-    }
-}
-void spiralFractal(int x, int y, int size, double n, double max) {
-    if (n > max) {
+void drawConstrainedSpiral(int xc, int yc, double maxR, double maxTheta, double theta, double startTheta) {
+    double rCutoff = 0.0001;
+    if (theta > maxTheta || maxR < rCutoff) {
         return;
     }
-    point a = spiralHelper(x, y, size, n);
-    gfx_point(a.x, a.y);
-    spiralFractal(a.x, a.y, size*1.5, n+.01, max);
+    
+    double i;
+    double s = (maxR/maxTheta);
+    int nextX = xc + ((int) ((s*theta) * (cos(theta))));
+    int nextY = yc + ((int) ((s*theta) * (sin(theta))));
+    gfx_point(nextX, nextY);
+    double r = distance(nextX, nextY, xc + ((s*(theta-(PI/12))) * (cos((theta-(PI/12))))), yc + ((s*(theta-(PI/12))) * (sin((theta-(PI/12))))))/2;
+    if (r > rCutoff && distance(xc, yc, nextX, nextY) < r) {
+        drawConstrainedSpiral(nextX, nextY, r, maxTheta, startTheta, startTheta); // inner spirals
+        //drawConstrainedSpiral(nextX, nextY, r, maxTheta, startTheta + (PI/12), theta);
+        //drawConstrainedSpiral(nextX, nextY, r, maxTheta, theta + (PI/12) - startTheta, 0);
+        
+    }
+    if (r <= rCutoff) {
+        return;
+    }
+    drawConstrainedSpiral(xc, yc, maxR, maxTheta, theta + (PI/12), startTheta); // outer
 }
