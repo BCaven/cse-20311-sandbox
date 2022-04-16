@@ -1,3 +1,12 @@
+/*
+    @author: John Blake Caven
+    @name: fractals.c
+
+    Lab 10
+
+
+*/
+
 #include <stdio.h>
 #include <math.h>
 #include "gfx.h"
@@ -18,7 +27,7 @@ void fernFractal(int x, int y, int branches, int size, double theta, int n, int 
 void spiralFractal(int x, int y, int size, double n, double max);
 point spiralHelper(int x, int y, int size, double theta);
 void drawSpiral(int x, int y, double size, double maxTheta, int maxSize);
-void drawConstrainedSpiral(int xc, int yc, double maxR, double maxTheta, double theta, double startTheta);
+void drawConstrainedSpiral(int xc, int yc, double R, double maxTheta, double theta, double startTheta, double maxR);
 int main(void) {
     int width = 500;
     int height = 500;
@@ -27,7 +36,9 @@ int main(void) {
     char c = '0';
     while (1) {
         gfx_clear();
-        gfx_text(10, 10, "Fractals 1-7 work. I am still working on Fractal 8.");
+        gfx_color(255, 255, 255);
+        gfx_text(10, 10, "Fractals 1-7 work. Fractal 8 partially works but not completely.");
+        gfx_text(10, 30, "press 1-8 for fractals, press 'q' to quit");
         if (c == '1') {
             sierpinski(width/10, height/10, (.9)*width, height/10, width/2, height * (.9), 7);
         } else if (c == '2') {
@@ -37,7 +48,7 @@ int main(void) {
         } else if (c == '4') {
             circularLace(width/2, height/2, width/4, 6, 6);
         } else if (c == '5') {
-            snowFlake(width/2, height/2, width/2, height/2, width/4, 5, 6);
+            snowFlake(width/2, height/2, width/2, height/2, width/4, 5, 7);
         } else if (c == '6') {
             treeFractal(width/2, height * (.9), 2, width/6, 0, 10);
         } else if (c == '7') {
@@ -45,7 +56,7 @@ int main(void) {
             fernFractal(width/2, height * (.9), 2, width/6, 0, n, n);
         } else if (c == '8') {
             int size = 400;
-            drawConstrainedSpiral(width/2, height/2, size, 6*PI, 0, 1);
+            drawConstrainedSpiral(width/2, height/2, size, 6*PI, 0, 0, size);
             gfx_circle(width/2, height/2, size);
             //drawSpiral(width/2, height/2, size, 4*PI, size);
             //spiralFractal(width/2, height/2, 1, 0, 2*PI);
@@ -98,6 +109,7 @@ void spiralSquares(int x, int y, int size, double n) {
         return;
     }
     spiralSquares(x + (cos(n) * (size*2)), y + (sin(n) * (size*2)), size + (n/4), n+.5); // Mmmmmmmm
+    
 }
 void circularLace(int x, int y, int size, int petals, int n) {
     if (n < 0) {
@@ -155,7 +167,8 @@ void fernFractal(int x, int y, int branches, int size, double theta, int n, int 
 double distance(int x1, int y1, int x2, int y2) {
     return sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
 }
-void drawConstrainedSpiral(int xc, int yc, double maxR, double maxTheta, double theta, double innerTheta) {
+void drawConstrainedSpiral(int xc, int yc, double R, double maxTheta, double theta, double innerTheta, double maxR) {
+    /*
     double rCutoff = 0.01;
     double s = (maxR/maxTheta);
     if (theta > maxTheta || maxR < rCutoff) {
@@ -184,5 +197,42 @@ void drawConstrainedSpiral(int xc, int yc, double maxR, double maxTheta, double 
     drawConstrainedSpiral(xc, yc, maxR, maxTheta, theta + (PI/12), 0); // main spiral
     //drawConstrainedSpiral(nextX, nextY, r, maxTheta, startTheta + (PI/12), theta);
     //drawConstrainedSpiral(nextX, nextY, r, maxTheta, theta + (PI/12) - startTheta, 0);   
-     
+    */
+
+    
+    /*
+    // inner spiral
+    double r = distance(nextX, nextY, xc + ((s*(theta-(PI/12))) * (cos((theta-(PI/12))))), yc + ((s*(theta-(PI/12))) * (sin((theta-(PI/12))))))/2;
+    if (innerTheta < maxTheta && r > .1) {
+        int innerX = nextX + ((int) ((s*innerTheta) * (cos(innerTheta))));
+        int innerY = nextY + ((int) ((s*innerTheta) * (sin(innerTheta))));
+        gfx_color(0, 255, 0);
+        gfx_point(innerX, innerY);
+        drawConstrainedSpiral(nextX, nextY, r, maxTheta, theta, innerTheta + (PI/12), maxR); // secondary spiral
+    } else {
+        // outer spiral
+        
+    }
+    gfx_color(255, 0, 0);
+    gfx_circle(nextX, nextY, 2);
+    drawConstrainedSpiral(xc, yc, maxR, maxTheta, theta + (PI/12), 0, maxR); // main spiral
+    */
+
+   // the broken but kinda functioning version (aka the "doesnt reset theta version")
+    if (theta >= maxTheta) {
+        return;
+    }
+    double s = (R/maxTheta);
+    int nextX = xc + ((int) ((s*theta) * (cos(theta))));
+    int nextY = yc + ((int) ((s*theta) * (sin(theta))));
+
+    gfx_point(nextX, nextY);
+    double r = distance(nextX, nextY, xc + ((s*(theta-(PI/12))) * (cos((theta-(PI/12))))), yc + ((s*(theta-(PI/12))) * (sin((theta-(PI/12))))))/2;
+    if (r < .0001) {
+        return;
+    }
+    drawConstrainedSpiral(xc, yc, R, maxTheta, theta + (PI/12), 0, maxR);
+    drawConstrainedSpiral(nextX, nextY, r, maxTheta, theta + (PI/12), theta, maxR);   
+    
+
 }
