@@ -40,39 +40,46 @@ option 4:
 
 */
 typedef struct {
-    int x;
-    int y;
-    double r;
-} sphere;
-
-typedef struct {
-    int r;
-    int g;
-    int b;
-} color;
-typedef struct {
     double x;
     double y;
     double z;
 } vec3;
 typedef struct {
+    vec3 v;
+    double r;
+} sphere;
+typedef struct {
+    int r;
+    int g;
+    int b;
+} color;
+
+typedef struct {
     vec3 origin;
     vec3 dir;
 } ray;
+typedef struct {
+    double d;
+    int hitGeometry;
+} hitInfo;
 
 
 color Color(int r, int g, int b);
-ray Ray(vec3 origin, vec3 dir);
 vec3 Vec3(double x, double y, double z);
+ray Ray(vec3 origin, vec3 dir);
+void makeGeometry(sphere geometry[], int l);
+color getRayColor(ray r, sphere geometry[]);
+void addScl(vec3 *a, vec3 b, double k);
+hitInfo getSceneDist(vec3 v, double r, sphere geometry[], int l);
+double distance(vec3 a, vec3 b);
+double length(vec3 v);
 vec3 getNormal(vec3 v);
 double dot(vec3 a, vec3 b);
+color simpleLighting(vec3 v, vec3 light);
 vec3 calcPixelRay(int x, int y, int width, int height);
 void writeScreen(color c[], int l, int width);
-color getRayColor(ray r);
-double length(vec3 v);
-double getSceneDist(vec3 v, double r, sphere geometry[]);
-void addScl(vec3 *a, vec3 b, double k);
-color simpleLighting(vec3 normal, vec3 light);
+
+
 
 
 int main(void) {
@@ -84,7 +91,8 @@ int main(void) {
     // 
     int numPoints = width * height;
     color c[numPoints];
-    sphere geometry[2]; // Idk make this later
+    sphere geometry[5]; // Idk make this later
+    makeGeometry(geometry, 5);
     int i;
     for (i = 0; i < numPoints; i += 1) {
         int x = i % width;
@@ -95,11 +103,14 @@ int main(void) {
         dir = calcPixelRay(x, y, width, height);
         cam = Vec3(0, 0, -5.0);
         r = Ray(cam, dir);
-        rc = getRayColor(r);
+        rc = getRayColor(r, geometry);
         c[i] = rc;
+        gfx_color(rc.r, rc.g, rc.b);
+        gfx_point(x, y);
+        gfx_flush();
     }
     
-    writeScreen(c, numPoints, width);
+    //writeScreen(c, numPoints, width);
 
 
 
@@ -127,8 +138,17 @@ ray Ray(vec3 origin, vec3 dir) {
     t.dir = dir;
     return t;
 }
-
-color getRayColor(ray r) {
+void makeGeometry(sphere geometry[], int l) {
+    int i;
+    for (i = 1; i <= l; i += 1) {
+        sphere t;
+        vec3 memalloc;
+        memalloc = Vec3((100/i) - 50, (100/i) - 50, (100/i) - 50);
+        t.v = memalloc;
+        t.r = i-1;
+    }
+}
+color getRayColor(ray r, sphere geometry[]) {
     int MAXSTEPS = 100;
     double EPS = 0.001;
     double rot = 0;
@@ -136,8 +156,10 @@ color getRayColor(ray r) {
     samplePoint = r.origin;
     int i;
     for (i = 0; i < MAXSTEPS; i += 1) {
-        double d = getSceneDist(samplePoint, rot);
-        if (EPS > d) {
+        hitInfo t;
+        t = getSceneDist(samplePoint, rot, geometry, 5);
+        if (EPS > t.d) {
+            printf("hit %lf %lf %lf\n", samplePoint.x, samplePoint.y, samplePoint.z);
             // but we want shading
             // use the tutorial online :D
             //vec3 normal;
@@ -145,9 +167,22 @@ color getRayColor(ray r) {
             //return Color(255/i, 255/i, 255/i);
             //return simpleLighting(samplePoint, Vec3(1, 1, 1)); // using a light that points directly out (or whatever)
             //return Color(255-(i*5), 255-(i*5), 255-(i*5));
-            return Color(255, 255, 255); // no shading
+            vec3 light;
+            light = Vec3(1, 1, 1);
+            vec3 hit = geometry[t.hitGeometry].v;
+            vec3 normal;
+            normal.x = samplePoint.x - hit.x;
+            normal.y = samplePoint.y - hit.y;
+            normal.z = samplePoint.z - hit.z;
+            double l = length(normal);
+            normal.x /= l;
+            normal.y /= l;
+            normal.z /= l;
+            return simpleLighting(normal, light);
+
+            //return Color(255, 255, 255); // no shading
         }
-        addScl(&samplePoint, r.dir, d);   
+        addScl(&samplePoint, r.dir, t.d);   
         rot += 1;     
     }
     return Color(0, 0, 0);
@@ -157,23 +192,27 @@ void addScl(vec3 *a, vec3 b, double k) {
     a->y += b.y * k;
     a->z += b.z * k;
 }
-double getSceneDist(vec3 v, double r, sphere geometry[]) {
+hitInfo getSceneDist(vec3 v, double r, sphere geometry[], int l) {
     // all of the shape gets drawn here...
-    double dC = length(v); // distance to the center
-    //printf("%lf %lf %lf\n", v.x, v.y, v.z);
-    /*
-    if (v.z < 1) {
-
-        return length(v); // a ring? (a set of rings... why?)
-    }
     
-
-    return dC - 2;
-    */
-    double closest;
+    double closest = distance(v, geometry[0].v) - geometry[0].r;
+    int shapeHit = l;
     int i;
-    for (i = 0; i < )
-    return length(v) - 3; // a circle of radius 1
+    for (i = 0; i < l; i += 1) {
+        double d = distance(v, geometry[i].v) - geometry[i].r; // the distance between the step vector and the the current shape
+        if (d < closest) {
+            closest = d;
+            shapeHit = i;
+        }
+    }
+    //printf("closest: %lf\n", closest);
+    hitInfo t;
+    t.d = closest;
+    t.hitGeometry = shapeHit;
+    return t; // a circle of radius 1
+}
+double distance(vec3 a, vec3 b) {
+    return sqrt( ( (a.x - b.x) * (a.x - b.x) ) + ( (a.y - b.y) * (a.y - b.y) ) + ( (a.z - b.z) * (a.z - b.z)) );
 }
 double length(vec3 v) {
     return sqrt((v.x * v.x) + (v.y * v.y) + (v.z * v.z));
@@ -186,13 +225,11 @@ double dot(vec3 a, vec3 b) {
 }
 color simpleLighting(vec3 v, vec3 light) {
     // easiest would be seeing how closely the normal aligns with the light vector
-    return Color(255, 255, 255); // temporary because how tf do normals work
-    
-    vec3 normal;
-    normal = getNormal(v);
-    double d = dot(normal, light) * -1.0;
+
+    double d = dot(v, light); //* -1.0;
+    printf("lighting: %d\n", (d * 100));
     if (d > 0) {
-        return Color(d * 10, d * 10, d * 10);
+        return Color(d * 200, d * 200, d * 200);
     } else {
         return Color(0, 0, 0);
     }
