@@ -5,10 +5,11 @@ typedef struct {
     int r;
     int g;
     int b;
+    int t;
 } color;
 color Color(int r, int g, int b);
-void draw(int x, int y, int brush, int currentColor, int canvas[], int width);
-void writeScreen(int paint[], int l, int width);
+void draw(int x, int y, int brush, int currentColor, color canvas[], int width);
+void writeScreen(color paint[], int l, int width);
 
 int main(void) {
     int width = 500;
@@ -16,12 +17,13 @@ int main(void) {
     char *name = "Paint";
     gfx_open(width, height, name);
     int numPoints = width * height;
-    int paint[numPoints]; // 0 = black, 1 = red, 2 = green, 3 = blue, 4 = eraser
+    color paint[numPoints]; // 0 = black, 1 = red, 2 = green, 3 = blue, 4 = eraser
     int i;
-    for (i = 0; i < numPoints; i += 1) {
-        paint[i] = 4;
+    for (i = 0; i < numPoints; i += 1) {~
+        paint[i] = Color(255, 255, 255);
     }
-    int currentColor = 0;
+    color currentColor;
+    
     char c = 1;
     while (1 == 1) {
         writeScreen(paint, numPoints, width);
@@ -34,18 +36,21 @@ int main(void) {
             int y = gfx_ypos();
             draw(x, y, 5, currentColor, paint, width);
         } else if (c == '1') {
-            currentColor = 1;
+            currentColor = Color(0, 0, 0);
         } else if (c == '2') {
-            currentColor = 2;
+            currentColor = Color(255, 0, 0);
         } else if (c == '3') {
-            currentColor = 3;
+            currentColor = Color(0, 255, 0);
         } else if (c == '4') {
-            currentColor = 4;
+            currentColor = Color(0, 0, 255);
+        } else if (c == '5') {
+            currentColor = Color(255, 255, 255);
         } else if (c == 'q') {
             return 0;
         }
                 
         gfx_clear();
+        
     }
 
 }
@@ -55,9 +60,10 @@ color Color(int r, int g, int b) {
     c.r = r;
     c.g = g;
     c.b = b;
+    c.t = 1;
     return c;
 }
-void draw(int x, int y, int brush, int currentColor, int canvas[], int width) {
+void draw(int x, int y, int brush, color currentColor, color canvas[], int width) {
     canvas[x + (y * width)] = currentColor;
     int i, j, nX, nY;
     nX = x;
@@ -78,19 +84,7 @@ void writeScreen(int paint[], int l, int width) {
     for (i = 0; i < l; i += 1) {
         int x = i % width;
         int y = i / width;
-        if (paint[i] == 0) {
-            gfx_color(0, 0, 0);
-        } else if (paint[i] == 1) {
-            gfx_color(255, 0, 0);
-        } else if (paint[i] == 2) {
-            gfx_color(0, 255, 0);
-        } else if (paint[i] == 3) {
-            gfx_color(0, 0, 255);
-        } else if (paint[i] == 4) {
-            gfx_color(255, 255, 255);
-        } else {
-            gfx_color(255, 0, 255);
-        }
+        gfx_color(paint[i].r, paint[i].g, paint[i].b);
         gfx_point(x, y);
     }
 }
